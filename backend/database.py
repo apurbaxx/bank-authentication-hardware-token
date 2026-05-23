@@ -128,22 +128,24 @@ def get_velocity_count(user_id: str, minutes: int = 60) -> int:
 
 def save_transaction(txn: dict):
     import json
+    from datetime import datetime
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # local time (IST)
     with get_conn() as conn:
         conn.execute("""
             INSERT INTO transactions
               (transaction_id, user_id, amount, recipient_upi, device_id, location,
-               hour, risk_score, decision, status, reason, factors)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+               hour, risk_score, decision, status, reason, factors, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             txn["transaction_id"], txn["user_id"], txn["amount"],
             txn["recipient_upi"], txn["device_id"], txn["location"],
             txn["hour"], txn["risk_score"], txn["decision"],
             txn.get("status", "pending"), txn.get("reason"),
-            json.dumps(txn.get("factors", {}))
+            json.dumps(txn.get("factors", {})), now
         ))
         conn.execute(
-            "INSERT INTO transaction_velocity (user_id, created_at) VALUES (?, datetime('now'))",
-            (txn["user_id"],)
+            "INSERT INTO transaction_velocity (user_id, created_at) VALUES (?, ?)",
+            (txn["user_id"], now)
         )
 
 
@@ -225,9 +227,11 @@ def get_pending_token_txn():
 
 def mark_hardware_seen():
     """Called when ESP32 polls — marks it as online."""
+    from datetime import datetime
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with get_conn() as conn:
         conn.execute(
-            "UPDATE token_status SET hardware_connected=1, last_seen=datetime('now') WHERE id=1"
+            "UPDATE token_status SET hardware_connected=1, last_seen=? WHERE id=1", (now,)
         )
 
 
