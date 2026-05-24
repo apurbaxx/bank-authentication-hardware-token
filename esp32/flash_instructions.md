@@ -87,12 +87,3 @@ GPIO 12    →  YES Button (other leg to GND)
 GPIO 14    →  NO  Button (other leg to GND)
 GPIO 26    →  Buzzer + (other leg to GND)
 ```
-
-## Troubleshooting
-| Problem | Fix |
-|---|---|
-| ESP32 not detected | Install CP2102 driver, try different USB cable |
-| OLED shows nothing | Check SDA=GPIO21, SCL=GPIO22. Run I2C scanner |
-| Can't reach backend | Same WiFi? Use 192.168.X.X not localhost. Allow port 5000 in firewall |
-| `urequests` not found | Upload urequests.py from micropython-lib GitHub |
-| Button not responding | Verify PULL_UP in code. Button connects GPIO to GND when pressed |
