@@ -1,8 +1,7 @@
-# BankGuard
+# Sentinel
 
 AI-powered fraud prevention system for digital banking. Every transaction is scored in real time — low risk gets approved instantly, high risk is sent to a physical hardware token for manual approval.
 
-Built for NIT Allahabad Hackathon by team finVerse.
 
 ---
 
